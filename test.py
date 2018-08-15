@@ -7,6 +7,17 @@ ix,iy=-1,-1
 rx,ry=-1,-1
 lx,ly=-1,-1
 r=-1
+def SelectColorCallBack(x):
+    pass
+
+
+def SelectColor():
+    r,g,b=0,0,0
+    r = cv2.getTrackbarPos('R', 'image')
+    g = cv2.getTrackbarPos('G', 'image')
+    b = cv2.getTrackbarPos('B', 'image')
+    return r,g,b
+color=SelectColor()
 def draw_circle(event,x,y,flags,param):
     global ix,iy,rx,ry,drawing,mode,r,lx,ly
     if event==cv2.EVENT_LBUTTONDOWN:
@@ -29,15 +40,18 @@ def draw_circle(event,x,y,flags,param):
     elif event==cv2.EVENT_LBUTTONUP:
         if drawing==True:
             if mode=="R"or mode=="r":
-                cv2.rectangle(img,(ix,iy),(rx,ry),(255,0,0),1)
+                cv2.rectangle(img,(ix,iy),(rx,ry), SelectColor(),1)
             if mode=="C"or mode=="c":
-                cv2.circle(img, (ix,iy), int(r), (0, 255, 0), 1)
+                cv2.circle(img, (ix,iy), int(r), SelectColor(), 1)
             if mode=="L" or mode=="l":
-                cv2.line(img,(ix,iy),(lx,ly),(0, 0, 255),1)
+                cv2.line(img,(ix,iy),(lx,ly), SelectColor(),1)
         drawing = False
 img=cv2.imread(r'C:\Users\Administrator\Desktop\t01d53dd07ee8929638.jpg')
 cv2.namedWindow('image')
-cv2.setMouseCallback('image',draw_circle)
+cv2.createTrackbar('R', 'image', 0, 255, SelectColorCallBack)
+cv2.createTrackbar('G', 'image', 0, 255, SelectColorCallBack)
+cv2.createTrackbar('B', 'image', 0, 255, SelectColorCallBack)
+cv2.setMouseCallback('image',draw_circle,color)
 while(1):
     cv2.imshow('image',img)
     k=cv2.waitKey(1)
@@ -52,4 +66,3 @@ while(1):
         mode="L"
     elif k==27:
         break
-
